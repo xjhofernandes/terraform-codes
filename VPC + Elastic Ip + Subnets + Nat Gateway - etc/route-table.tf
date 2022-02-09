@@ -15,7 +15,7 @@ resource "aws_main_route_table_association" "prv" {
   route_table_id = aws_route_table.prv.id
 }
 resource "aws_route_table_association" "prv" {
-  for_each = { for k, instance in flatten(aws_subnet.prv) : k => instance.id}
+  for_each       = { for k, instance in flatten(aws_subnet.prv) : k => instance.id }
   subnet_id      = each.value
   route_table_id = aws_route_table.prv.id
   depends_on = [
@@ -41,7 +41,7 @@ resource "aws_route_table" "pub" {
   ]
 }
 resource "aws_route_table_association" "pub" {
-  for_each = { for k, instance in flatten(aws_subnet.pub) : k => instance.id}
+  for_each       = { for k, instance in flatten(aws_subnet.pub) : k => instance.id }
   subnet_id      = each.value
   route_table_id = aws_route_table.pub.id
   depends_on = [
@@ -55,7 +55,7 @@ resource "aws_route_table" "natg" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.natg.id
   }
 
@@ -68,7 +68,7 @@ resource "aws_route_table" "natg" {
   ]
 }
 resource "aws_route_table_association" "natg" {
-  for_each = { for k, instance in flatten(aws_subnet.natg) : k => instance.id}
+  for_each       = { for k, instance in flatten(aws_subnet.natg) : k => instance.id }
   subnet_id      = each.value
   route_table_id = aws_route_table.natg.id
   depends_on = [

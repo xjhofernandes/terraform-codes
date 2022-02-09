@@ -1,5 +1,5 @@
 resource "aws_subnet" "prv" {
-  count = length(var.subn_prv)
+  count      = length(var.subn_prv)
   vpc_id     = aws_vpc.main.id
   cidr_block = var.subn_prv[count.index].cidr_block
   tags = {
@@ -13,7 +13,7 @@ resource "aws_subnet" "prv" {
 
 
 resource "aws_subnet" "pub" {
-  count = length(var.subn_pub)
+  count      = length(var.subn_pub)
   vpc_id     = aws_vpc.main.id
   cidr_block = var.subn_pub[count.index].cidr_block
   tags = {
@@ -27,7 +27,7 @@ resource "aws_subnet" "pub" {
 
 
 resource "aws_subnet" "natg" {
-  count = length(var.subn_natg)
+  count      = length(var.subn_natg)
   vpc_id     = aws_vpc.main.id
   cidr_block = var.subn_natg[count.index].cidr_block
   tags = {
