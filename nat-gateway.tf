@@ -9,8 +9,7 @@ resource "aws_network_interface" "natg" {
 
 resource "aws_eip" "natg" {
   vpc                       = true
-  #network_interface         = aws_network_interface.natg.id
-  #associate_with_private_ip = "10.0.0.147"
+  associate_with_private_ip = "10.0.0.147"
 
   tags = {
     Name = "tg-dev-elip-natg-terraform-0"
