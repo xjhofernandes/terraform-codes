@@ -1,9 +1,9 @@
 resource "aws_subnet" "prv" {
+  count = length(var.subn_prv)
   vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.3.0/24"
-
+  cidr_block = var.subn_prv[count.index].cidr_block
   tags = {
-    Name = "tg-dev-subn-prv-terraform-0-a"
+    Name = var.subn_prv[count.index].name
   }
 
   depends_on = [
@@ -13,26 +13,27 @@ resource "aws_subnet" "prv" {
 
 
 resource "aws_subnet" "pub" {
+  count = length(var.subn_pub)
   vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.0.0/24"
-
+  cidr_block = var.subn_pub[count.index].cidr_block
   tags = {
-    Name = "tg-dev-subn-pub-terraform-0-a"
+    Name = var.subn_pub[count.index].name
   }
 
   depends_on = [
     aws_vpc.main
-  ]  
+  ]
 }
 
 
 resource "aws_subnet" "natg" {
+  count = length(var.subn_natg)
   vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.6.0/24"
-
+  cidr_block = var.subn_natg[count.index].cidr_block
   tags = {
-    Name = "tg-dev-subn-natg-terraform-0-a"
+    Name = var.subn_natg[count.index].name
   }
+
   depends_on = [
     aws_vpc.main
   ]

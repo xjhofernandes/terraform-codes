@@ -1,5 +1,5 @@
 resource "aws_network_interface" "natg" {
-  subnet_id   = aws_subnet.pub.id
+  subnet_id   = aws_subnet.pub[0].id
   private_ips = ["10.0.0.147"]
 
   tags = {
@@ -18,7 +18,7 @@ resource "aws_eip" "natg" {
 
 resource "aws_nat_gateway" "natg" {
   allocation_id = aws_eip.natg.allocation_id
-  subnet_id     = aws_subnet.pub.id
+  subnet_id     = aws_subnet.pub[0].id
 
   tags = {
     Name = "tg-dev-natg-terraform-0"
