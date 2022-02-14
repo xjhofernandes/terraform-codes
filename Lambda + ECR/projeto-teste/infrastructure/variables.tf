@@ -5,22 +5,15 @@ variable "ambiente" {
 }
 
 
-variable "image_uri" {
-  description = "URI da imagem no ECR"
-  type        = string
-  default     = "607329366285.dkr.ecr.us-east-1.amazonaws.com/tg-pixel:v0.0.3-dev"
-}
+locals{
+  lambda = {
+    "image_uri" = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${basename(abspath("../"))}:latest"
+    "function_name" = "${basename(abspath("../"))}"
+  }
+  iam = {
+    name = "tg-${var.ambiente}-${basename(abspath("../"))}"
+  }
 
-
-variable "lambda_function_name" {
-  default = "tg-terraform-teste"
-}
-
-
-variable "lamba_iam_name" {
-  description = "Nome IAM responsável pela Lambda"
-  type        = string
-  default     = "tg-dev-role-chuva-2"
 }
 
 
