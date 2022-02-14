@@ -48,7 +48,7 @@ variable "lambda_policies_arn" {
 
 variable "lambda_memory_size" {
   type = number
-  default = 1024
+  default = 128
 }
 
 
@@ -57,9 +57,6 @@ variable "lambda_timeout" {
   default = 300
 }
 
-
-
-#######
 variable "region" {
   default = "us-east-1"
 }
