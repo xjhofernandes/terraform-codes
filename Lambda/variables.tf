@@ -8,7 +8,7 @@ variable "ambiente" {
 variable "image_uri" {
   description = "URI da imagem no ECR"
   type        = string
-  default     = "607329366285.dkr.ecr.us-east-1.amazonaws.com/tg-chuva:v0.1.4-dev"
+  default     = "URL-imagem-docker"
 }
 
 
