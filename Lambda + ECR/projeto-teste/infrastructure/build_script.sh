@@ -7,7 +7,7 @@ conta_aws=$2
 regiao=$3
 
 echo "subindo imagem no repositório"
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${conta_aws}.dkr.ecr.us-east-1.amazonaws.com ;
+aws ecr get-login-password --region ${regiao} | docker login --username AWS --password-stdin ${conta_aws}.dkr.ecr.${regiao}.amazonaws.com ;
 echo "logado com sucesso"
 
 echo "Comecando processo de build da imagem"
