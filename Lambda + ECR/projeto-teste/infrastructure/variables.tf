@@ -50,6 +50,3 @@ variable "lambda_timeout" {
   default = 300
 }
 
-variable "region" {
-  default = "us-east-1"
-}
