@@ -1,7 +1,7 @@
 resource "null_resource" "copy_script" {
 
   provisioner "local-exec" {
-    command = "copy build_script.sh ../"
+    command = "cp build_script.sh ../"
   }
 }
 
