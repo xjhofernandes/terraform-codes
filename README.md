@@ -20,6 +20,10 @@ Comandos básicos:
 * **terraform show**
   * Mostra detalhadamente como a está a infraestrutura deployada via terraforms na nuvem. Obs: Informações obtidas via json.
 
+* **terraform state rm "nome.recurso"**
+  * Remove um recurso da infraestrutura. Exemplo: terraform state rm aws_instance.web. 
+  Obs: Utilizado caso tenha excluído recursos da nuvem e o mesmo existe no arquivo .tf.
+
 ### Variaveis
 No Terraform é possível ter um arquivo separado apenas contendo variáveis que serão utilizadas nos arquivos de configurações (tf).
 
