@@ -24,13 +24,28 @@ resource "aws_api_gateway_integration" "integration" {
   uri                     = aws_lambda_function.container_lambda.invoke_arn
 }
 
+
 resource "aws_api_gateway_method_response" "example" {
   rest_api_id = aws_api_gateway_rest_api.example.id
   resource_id = aws_api_gateway_rest_api.example.root_resource_id
   http_method = aws_api_gateway_method.example.http_method
   status_code = "200"
+
+  response_models = {
+    "application/json" = "Empty"
+  }
 }
 
+resource "aws_api_gateway_integration_response" "example" {
+  rest_api_id = aws_api_gateway_rest_api.example.id
+  resource_id = aws_api_gateway_rest_api.example.root_resource_id
+  http_method = aws_api_gateway_method.example.http_method
+  status_code = aws_api_gateway_method_response.example.status_code
+
+  response_templates = {
+    "application/json" = ""
+  }
+}
 
 # Proxy Resource
 
@@ -54,4 +69,26 @@ resource "aws_api_gateway_integration" "proxy" {
   integration_http_method = "ANY"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.container_lambda.invoke_arn
+}
+
+resource "aws_api_gateway_method_response" "proxy" {
+  rest_api_id = aws_api_gateway_rest_api.example.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy.http_method
+  status_code = "200"
+
+  response_models = {
+    "application/json" = "Empty"
+  }
+}
+
+resource "aws_api_gateway_integration_response" "proxy" {
+  rest_api_id = aws_api_gateway_rest_api.example.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.proxy.http_method
+  status_code = aws_api_gateway_method_response.proxy.status_code
+
+  response_templates = {
+    "application/json" = ""
+  }
 }
