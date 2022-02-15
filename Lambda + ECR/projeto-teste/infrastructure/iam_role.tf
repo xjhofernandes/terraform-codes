@@ -20,7 +20,7 @@ EOF
 
 
 resource "aws_iam_role_policy_attachment" "lambda_policies" {
-  for_each = toset(var.lambda_policies_arn)
+  for_each   = toset(var.lambda_policies_arn)
   role       = aws_iam_role.iam_for_lambda.name
   policy_arn = each.value
 }
