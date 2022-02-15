@@ -1,2 +1,12 @@
-def handler(event, context) -> str:
-    return 'Hello, world from Terraform Deploy! :)'
+from mangum import Mangum
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello World, from Terraform! :)"}
+
+
+handler = Mangum(app=app)
