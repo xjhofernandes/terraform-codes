@@ -1,59 +1,19 @@
 resource "aws_api_gateway_rest_api" "example" {
   name = local.lambda.function_name
+  description = "Deploy realizado via Terraform"
 
   endpoint_configuration {
     types = ["REGIONAL"]
-  }
+  }  
 }
 
-# Method ANY to root resource
-
-resource "aws_api_gateway_method" "example" {
-  rest_api_id   = aws_api_gateway_rest_api.example.id
-  resource_id   = aws_api_gateway_rest_api.example.root_resource_id
-  http_method   = "ANY"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "integration" {
-  rest_api_id             = aws_api_gateway_rest_api.example.id
-  resource_id             = aws_api_gateway_rest_api.example.root_resource_id
-  http_method             = aws_api_gateway_method.example.http_method
-  integration_http_method = "ANY"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.container_lambda.invoke_arn
-}
-
-
-resource "aws_api_gateway_method_response" "example" {
-  rest_api_id = aws_api_gateway_rest_api.example.id
-  resource_id = aws_api_gateway_rest_api.example.root_resource_id
-  http_method = aws_api_gateway_method.example.http_method
-  status_code = "200"
-
-  response_models = {
-    "application/json" = "Empty"
-  }
-}
-
-resource "aws_api_gateway_integration_response" "example" {
-  rest_api_id = aws_api_gateway_rest_api.example.id
-  resource_id = aws_api_gateway_rest_api.example.root_resource_id
-  http_method = aws_api_gateway_method.example.http_method
-  status_code = aws_api_gateway_method_response.example.status_code
-
-  response_templates = {
-    "application/json" = ""
-  }
-}
-
-# Proxy Resource
 
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.example.id
   parent_id   = aws_api_gateway_rest_api.example.root_resource_id
   path_part   = "{proxy+}"
 }
+
 
 resource "aws_api_gateway_method" "proxy" {
   rest_api_id   = aws_api_gateway_rest_api.example.id
@@ -62,33 +22,55 @@ resource "aws_api_gateway_method" "proxy" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "proxy" {
+
+resource "aws_api_gateway_integration" "lambda" {
   rest_api_id             = aws_api_gateway_rest_api.example.id
-  resource_id             = aws_api_gateway_resource.proxy.id
+  resource_id             = aws_api_gateway_method.proxy.resource_id
   http_method             = aws_api_gateway_method.proxy.http_method
-  integration_http_method = "ANY"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.container_lambda.invoke_arn
 }
 
-resource "aws_api_gateway_method_response" "proxy" {
-  rest_api_id = aws_api_gateway_rest_api.example.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.proxy.http_method
-  status_code = "200"
 
-  response_models = {
-    "application/json" = "Empty"
-  }
+resource "aws_api_gateway_method" "proxy_root" {
+  rest_api_id   = aws_api_gateway_rest_api.example.id
+  resource_id   = aws_api_gateway_rest_api.example.root_resource_id
+  http_method   = "ANY"
+  authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration_response" "proxy" {
-  rest_api_id = aws_api_gateway_rest_api.example.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.proxy.http_method
-  status_code = aws_api_gateway_method_response.proxy.status_code
 
-  response_templates = {
-    "application/json" = ""
-  }
+resource "aws_api_gateway_integration" "lambda_root" {
+  rest_api_id             = aws_api_gateway_rest_api.example.id
+  resource_id             = aws_api_gateway_method.proxy_root.resource_id
+  http_method             = aws_api_gateway_method.proxy_root.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.container_lambda.invoke_arn
+}
+
+
+resource "aws_api_gateway_deployment" "example" {
+  depends_on = [
+    aws_api_gateway_integration.lambda,
+    aws_api_gateway_integration.lambda_root,
+  ]
+  rest_api_id = aws_api_gateway_rest_api.example.id
+  stage_name  = "test"
+}
+
+
+# Permission AWS LAMBDA
+resource "aws_lambda_permission" "apigw" {
+   statement_id  = "AllowAPIGatewayInvoke"
+   action        = "lambda:InvokeFunction"
+   function_name = aws_lambda_function.container_lambda.function_name
+   principal     = "apigateway.amazonaws.com"
+
+   source_arn = "${aws_api_gateway_rest_api.example.execution_arn}/*/*"
+}
+
+output "base_url" {
+  value = aws_api_gateway_deployment.example.invoke_url
 }
