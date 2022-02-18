@@ -6,6 +6,9 @@ variable "ambiente" {
 
 
 locals {
+  api_gateway = {
+    "description" = "API Gerada atráves do Terraform."
+  }
   lambda = {
     "image_uri"     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${basename(abspath("../"))}:latest"
     "function_name" = "${basename(abspath("../"))}"

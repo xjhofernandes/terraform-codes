@@ -1,6 +1,6 @@
 resource "aws_api_gateway_rest_api" "example" {
   name = local.lambda.function_name
-  description = "Deploy realizado via Terraform"
+  description = local.api_gateway.description
 
   endpoint_configuration {
     types = ["REGIONAL"]
