@@ -15,8 +15,8 @@ resource "aws_lambda_function" "container_lambda" {
   }
 
   vpc_config {
-    subnet_ids         = var.lambda_subnets
-    security_group_ids = var.lambda_security_groups
+    subnet_ids         = "${data.aws_subnet.selected.*.id}"
+    security_group_ids = [data.aws_security_group.selected.id]
   }
 
   depends_on = [

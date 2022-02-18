@@ -18,3 +18,6 @@ docker tag ${repo_name}:latest ${conta_aws}.dkr.ecr.${regiao}.amazonaws.com/${re
 
 echo "Subindo imagem no ECR."
 docker push ${conta_aws}.dkr.ecr.${regiao}.amazonaws.com/${repo_name}:latest ;
+
+echo "Deletando script"
+rm build_script.sh
